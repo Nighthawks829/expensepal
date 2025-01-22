@@ -22,7 +22,7 @@ export default function SplitExpense({ route, navigation }) {
   const [expenseAmount, setExpenseAmount] = useState(
     route.params.expenseAmount || ""
   );
-  const [expenseCategory, setExpenseCategory] = useState("");
+  const [expenseCategory, setExpenseCategory] = useState("Food & Drinks");
   // const [splitMethod, setSplitMethod] = useState("equally");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());

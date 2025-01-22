@@ -67,6 +67,10 @@ export default function SplitOptions({ route, navigation }) {
   //   }
   // }, [splitMethod]);
 
+  useEffect(()=>{
+    console.log(route.params);
+  },[])
+
   useEffect(() => {
     setRemainingAmount(expenseAmount - userExactAmount - friendExactAmount);
   }, [userExactAmount, friendExactAmount])
@@ -499,6 +503,8 @@ export default function SplitOptions({ route, navigation }) {
         amount: expenseAmount,
         user_share: userShare,
         friend_share: friendShare,
+        expense_name:expenseName,
+        expense_category:expenseCategory,
         description: description,
         status: "unpaid",
       })

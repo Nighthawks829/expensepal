@@ -64,10 +64,11 @@ export default function FriendSplitHistory({ route, navigation }) {
       </Text>
       {splitExpenses.map((item) => (
         <View key={item.split_id.toString()} style={styles.item}>
+            <Text>{`${item.expense_name}`}</Text>
           <Text>{`Amount: RM${item.amount}`}</Text>
           <Text>{`${item.user_name} owes: RM${item.user_share}, ${item.friend_name} owes: RM${item.friend_share}`}</Text>
           <Text>{`${item.payer_name} paid RM${item.amount}`}</Text>
-          {/* <Text>{`Status: ${item.status}`}</Text> */}
+          <Text>{`Category: ${item.category}`}</Text>
         </View>
       ))}
       <Button title="Add Split Expense" onPress={addSplitExpense} style={styles.addButton} />
