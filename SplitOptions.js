@@ -33,7 +33,7 @@ export default function SplitOptions({ route, navigation }) {
 
   const [userExactAmount, setUserExactAmount] = useState(0)
   const [friendExactAmount, setFriendExactAmount] = useState(0)
-  const [remainingAmount, setRemainingAmount] = useState(0)
+  const [remainingAmount, setRemainingAmount] = useState(100)
 
   const [userPercentage, setUserPercentage] = useState(0)
   const [friendPercentage, setFriendPercentage] = useState(0)
@@ -67,9 +67,9 @@ export default function SplitOptions({ route, navigation }) {
   //   }
   // }, [splitMethod]);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(route.params);
-  },[])
+  }, [])
 
   useEffect(() => {
     setRemainingAmount(expenseAmount - userExactAmount - friendExactAmount);
@@ -112,6 +112,8 @@ export default function SplitOptions({ route, navigation }) {
     const share = selectedCount > 0 ? expenseAmount / selectedCount : 0;
 
     // const equalShare = expenseAmount / 2;
+
+    let friendAmount = 0;
 
     return (
       <View style={styles.splitContainer}>
@@ -171,11 +173,13 @@ export default function SplitOptions({ route, navigation }) {
           <Text>{user.username}</Text>
           <TextInput
             style={styles.input}
+            value={userExactAmount.toString()}
             placeholder="Amount"
             keyboardType="numeric"
             onChangeText={(value) => {
               setUserExactAmount(value);
-              setRemainingAmount(expenseAmount - userExactAmount - friendExactAmount)
+              setFriendExactAmount(expenseAmount - value)
+              setRemainingAmount(expenseAmount - value - (expenseAmount - value))
             }}
 
           />
@@ -184,11 +188,16 @@ export default function SplitOptions({ route, navigation }) {
           <Text>{friendUsername}</Text>
           <TextInput
             style={styles.input}
+            value={friendExactAmount.toString()}
             placeholder="Amount"
             keyboardType="numeric"
             onChangeText={(value) => {
-              setFriendExactAmount(value);
-              setRemainingAmount(expenseAmount - userExactAmount - friendExactAmount)
+              setFriendExactAmount(value)
+              setUserExactAmount(expenseAmount - value)
+              setRemainingAmount(expenseAmount - value - (expenseAmount - value))
+              setRemainingAmount(expenseAmount - value - (expenseAmount - value))
+              // setFriendExactAmount(value);
+              // setRemainingAmount(expenseAmount - userExactAmount - friendExactAmount)
             }}
 
           />
@@ -239,22 +248,28 @@ export default function SplitOptions({ route, navigation }) {
         <View style={styles.inputRow}>
           <Text>{user.username}</Text>
           <TextInput
+            value={userPercentage.toString()}
             style={styles.input}
             placeholder="Enter %"
             keyboardType="numeric"
             onChangeText={(value) => {
               setUserPercentage(value)
+              setFriendPercentage(100 - value)
+              setRemainingPercentage(100 - value - (100 - value))
             }}
           />
         </View>
         <View style={styles.inputRow}>
           <Text>{friendUsername}</Text>
           <TextInput
+            value={friendPercentage.toString()}
             style={styles.input}
             placeholder="Enter %"
             keyboardType="numeric"
             onChangeText={(value) => {
               setFriendPercentage(value)
+              setUserPercentage(100 - value)
+              setRemainingPercentage(100 - value - (100 - value))
             }}
           />
         </View>
@@ -460,6 +475,9 @@ export default function SplitOptions({ route, navigation }) {
       if (totalSplit != expenseAmount) {
         alert("The total split amounts do not match the expense amount.");
         return;
+      } else if (userExactAmount < 0 || friendExactAmount < 0) {
+        alert("The total split amounts is over the expense amount.");
+        return;
       } else {
         setUserShare(userExactAmount)
         setFriendShare(friendExactAmount)
@@ -468,6 +486,9 @@ export default function SplitOptions({ route, navigation }) {
       const totalPercentage = Number(userPercentage) + Number(friendPercentage)
       if (totalPercentage != 100) {
         alert("The percentages do not add up to 100%");
+        return;
+      } else if (userPercentage < 0 || friendPercentage < 0) {
+        alert("One user percentage cannot over 100%");
         return;
       } else {
         setUserShare(Number(expenseAmount * Number(userPercentage) / 100))
@@ -499,12 +520,12 @@ export default function SplitOptions({ route, navigation }) {
       const response = await axios.post("http://192.168.0.112/expensepal_api/addSplitExpense.php", {
         user_id: user.user_id,
         friend_id: friendId,
-        payer_id:payer,
+        payer_id: payer,
         amount: expenseAmount,
         user_share: userShare,
         friend_share: friendShare,
-        expense_name:expenseName,
-        expense_category:expenseCategory,
+        expense_name: expenseName,
+        expense_category: expenseCategory,
         description: description,
         status: "unpaid",
       })
