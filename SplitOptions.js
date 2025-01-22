@@ -178,8 +178,13 @@ export default function SplitOptions({ route, navigation }) {
             keyboardType="numeric"
             onChangeText={(value) => {
               setUserExactAmount(value);
-              setFriendExactAmount(expenseAmount - value)
-              setRemainingAmount(expenseAmount - value - (expenseAmount - value))
+              if (expenseAmount - value < 0) {
+                setFriendExactAmount(0)
+                setRemainingAmount(expenseAmount - value - 0)
+              } else {
+                setFriendExactAmount(expenseAmount - value)
+                setRemainingAmount(expenseAmount - value - (expenseAmount - value))
+              }
             }}
 
           />
@@ -203,8 +208,11 @@ export default function SplitOptions({ route, navigation }) {
           />
         </View>
         <Text style={styles.remainingAmountText}>
-          Remaining Amount: RM {remainingAmount.toFixed(2)}
+          {remainingAmount < 0
+            ? "The total split amounts is over the expense amount. Please adjust."
+            : `Remaining Amount: RM ${remainingAmount.toFixed(2)}`}
         </Text>
+
       </View>
     );
   };
@@ -254,8 +262,13 @@ export default function SplitOptions({ route, navigation }) {
             keyboardType="numeric"
             onChangeText={(value) => {
               setUserPercentage(value)
-              setFriendPercentage(100 - value)
-              setRemainingPercentage(100 - value - (100 - value))
+              if (100 - value < 0) {
+                setFriendPercentage(0)
+                setRemainingPercentage(100 - value - 0)
+              } else {
+                setFriendPercentage(100 - value)
+                setRemainingPercentage(100 - value - (100 - value))
+              }
             }}
           />
         </View>
@@ -268,8 +281,13 @@ export default function SplitOptions({ route, navigation }) {
             keyboardType="numeric"
             onChangeText={(value) => {
               setFriendPercentage(value)
-              setUserPercentage(100 - value)
-              setRemainingPercentage(100 - value - (100 - value))
+              if (100 - value - 0) {
+                setUserPercentage(0)
+                setRemainingPercentage(100 - value - 0)
+              } else {
+                setUserPercentage(100 - value)
+                setRemainingPercentage(100 - value - (100 - value))
+              }
             }}
           />
         </View>
@@ -472,7 +490,10 @@ export default function SplitOptions({ route, navigation }) {
     } else if (splitMethod === "amounts") {
       totalSplit = Number(userExactAmount) + Number(friendExactAmount)
 
-      if (totalSplit != expenseAmount) {
+      if (remainingAmount < 0) {
+        alert("The total split amounts is over the expense amount.");
+        return;
+      } else if (totalSplit != expenseAmount) {
         alert("The total split amounts do not match the expense amount.");
         return;
       } else if (userExactAmount < 0 || friendExactAmount < 0) {
@@ -482,13 +503,17 @@ export default function SplitOptions({ route, navigation }) {
         setUserShare(userExactAmount)
         setFriendShare(friendExactAmount)
       }
+
     } else if (splitMethod === "percentages") {
       const totalPercentage = Number(userPercentage) + Number(friendPercentage)
-      if (totalPercentage != 100) {
+      if (remainingPercentage < 0) {
+        alert("Total percentage exceeds 100%!");
+        return;
+      } else if (totalPercentage != 100) {
         alert("The percentages do not add up to 100%");
         return;
       } else if (userPercentage < 0 || friendPercentage < 0) {
-        alert("One user percentage cannot over 100%");
+        alert("Total percentage exceeds 100%!");
         return;
       } else {
         setUserShare(Number(expenseAmount * Number(userPercentage) / 100))
