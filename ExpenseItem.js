@@ -2,7 +2,7 @@ import React from "react";
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 export default function ExpenseItem({item, onEdit, editable}) {
-    console.log(item);
+    // console.log(item);
     
     if (!item) return null;
 

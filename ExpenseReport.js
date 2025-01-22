@@ -393,19 +393,37 @@ import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ExpenseReport({ navigation }) {
-  const { expenses, budgets, fetchBudgets } = useContext(ExpenseContext);
+  const { expenses, budgets, fetchBudgets, fetchExpenses } = useContext(ExpenseContext);
   const { user } = useContext(UserContext);
   const [data, setData] = useState([]);
   const [currencySymbol, setCurrencySymbol] = useState("");
 
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const today = new Date().toISOString()?.split("T")[0];
+
   const [selectedMonth, setSelectedMonth] = useState(new Date());
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchExpenses(user.user_id)
+      fetchBudgets(user.user_id)
+      // const totalBudgetAmount = budgets.filter(budget => {
+      //   const categories = budget.categories.split(", ").map(category => category.trim());
+      //   return targetCategories.every(targetCategory => categories.includes(targetCategory));
+      // }).reduce((total, budget) => total + parseFloat(budget.budgetAmount), 0);
+
+    }, []),
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchCurrency = async () => {
         try {
           const savedCurrency = await AsyncStorage.getItem("SelectedCurrency");
-          console.log("Currency:", savedCurrency);
+          // console.log("Currency:", savedCurrency);
 
           const currencyMapping = {
             MYR: "RM",
@@ -417,7 +435,7 @@ export default function ExpenseReport({ navigation }) {
           };
 
           const symbol = currencyMapping[savedCurrency || "MYR"];
-          console.log("45 Mapped Symbol:", symbol);
+          // console.log("45 Mapped Symbol:", symbol);
           setCurrencySymbol(symbol);
         } catch (error) {
           console.error("Failed to fetch currency", error);
@@ -479,8 +497,8 @@ export default function ExpenseReport({ navigation }) {
 
   useEffect(() => {
     fetchBudgets(user.user_id);
-    console.log("Expenses", expenses);
-    console.log("Budget", budgets);
+    // console.log("Expenses", expenses);
+    // console.log("Budget", budgets);
 
     const categoryTotals = filteredExpenses.reduce((totals, expense) => {
       const category = expense.category;
@@ -544,31 +562,52 @@ export default function ExpenseReport({ navigation }) {
       "Insurance",
       "Miscellaneous",
     ];
-    const includesAllCategories =
-      categories.length === allCategories.length &&
-      categories.every((category) => allCategories.includes(category));
-    console.log("Expense", expenses);
 
-    const budgetSpent = expenses
-      .filter((expense) => {
-        const expenseDate = new Date(expense.date);
-        console.log("Expense date", expenseDate);
-        console.log("Start end", start, end);
-        return (
-          expenseDate >= start &&
-          expenseDate <= end &&
-          (includesAllCategories || categories.includes(expense.category))
-        );
-      })
-      .reduce((total, item) => Number(total) + Number(item.amount), 0);
+    const budgetCategories = budget.categories.split(", ").map(category => category.trim());
 
-    console.log("BudgetSpent:", budgetSpent);
-    console.log("Amount", budgetAmount);
-    console.log("Budget Spent", budgetSpent);
-    const budgetRemaining = budgetAmount - budgetSpent;
-    const budgetUsagePercentage =
-      budgetAmount > 0 ? ((budgetSpent / budgetAmount) * 100).toFixed(2) : 0;
+    const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
 
+    const monthlyExpenses = sortedExpenses.filter((exp) => {
+      const expenseDate = new Date(exp.date);
+      return (
+        expenseDate.getMonth() === currentMonth &&
+        expenseDate.getFullYear() === currentYear &&
+        budgetCategories.some(category => exp.category.includes(category))
+      );
+    });
+
+
+    const totalSpent = monthlyExpenses.reduce((total, item) => total + Number(item.amount), 0).toFixed(2);
+
+    // console.log(expenses);
+    // const includesAllCategories =
+    //   categories.length === allCategories.length &&
+    //   categories.every((category) => allCategories.includes(category));
+    // // console.log("Expense", expenses);
+
+    // const budgetSpent = expenses
+    //   .filter((expense) => {
+    //     const expenseDate = new Date(expense.date);
+    //     // console.log("Expense date", expenseDate);
+    //     // console.log("Start end", start, end);
+    //     return (
+    //       expenseDate >= start &&
+    //       expenseDate <= end &&
+    //       (includesAllCategories || categories.includes(expense.category))
+    //     );
+    //   })
+    //   .reduce((total, item) => Number(total) + Number(item.amount), 0);
+
+    // // console.log("BudgetSpent:", budgetSpent);
+    // // console.log("Amount", budgetAmount);
+    // // console.log("Budget Spent", budgetSpent);
+    // const budgetRemaining = budgetAmount - budgetSpent;
+    // const budgetUsagePercentage =
+    //   budgetAmount > 0 ? ((budgetSpent / budgetAmount) * 100).toFixed(2) : 0;
+    const totalBudget = budget.budgetAmount;
+    const budgetSpent = Number(totalSpent);
+    const budgetRemaining = totalBudget - budgetSpent;
+    const budgetUsagePercentage = ((budgetSpent / totalBudget) * 100).toFixed(2);
     return { budgetSpent, budgetRemaining, budgetUsagePercentage };
   };
 
@@ -598,6 +637,7 @@ export default function ExpenseReport({ navigation }) {
         backgroundColor="transparent"
         paddingLeft={"15"}
         absolute
+
       />
 
       <Text style={styles.totalSpent}>
@@ -613,50 +653,9 @@ export default function ExpenseReport({ navigation }) {
       <View style={styles.budgetSection}>
         <Text style={styles.budgetLabel}>Budgets</Text>
         {Object.keys(budgets || {}).map((key, index) => {
-          console.log("Budgets", budgets);
           const budget = budgets[key];
-          console.log("Budget Object:", budget);
-          const { budgetSpent, budgetRemaining, budgetUsagePercentage } =
-            calculateBudgetUsage(budget);
-          // const { budgetName, budgetAmount } = budget;
-
-          // const start = new Date(startDate);
-          // const end = new Date(endDate);
-
-          // const budgetSpent = expenses
-          //   .filter((expense) => {
-          //     const expenseDate = new Date(expense.date);
-          //     return (
-          //       expenseDate >= start &&
-          //       expenseDate <= end &&
-          //       (category.includes(expense.category) ||
-          //         categories.includes("All"))
-          //     );
-          //   })
-          //   .reduce((total, item) => total + Number(item.amount), 0);
-
-          // const budgetRemaining = budgetAmount - budgetSpent;
-          // const budgetUsagePercentage =
-          //   budgetAmount > 0
-          //     ? ((budgetSpent / budgetAmount) * 100).toFixed(2)
-          //     : 0;
-          // }) === 0 ? (
-          //   <Text style={styles.noBudgetsText}>No budgets added</Text>
-          // ) : (
-          //   budgets.map((budget, index) => {
-          //     const budgetName = budget.budgetName;
-          //     const budgetAmount = Number(budget.budgetAmount);
-          //     const budgetSpent = expenses
-          //       .filter((e) => e.category === budgetName)
-          //       .reduce((total, item) => total + Number(item.amount), 0);
-          //     const budgetRemaining = budgetAmount - budgetSpent;
-          //     const budgetUsagePercentage =
-          //       budgetAmount > 0
-          //         ? ((budgetSpent / budgetAmount) * 100).toFixed(2)
-          //         : 0;
-
+          const { budgetSpent, budgetRemaining, budgetUsagePercentage } = calculateBudgetUsage(budget);
           return (
-            // <Text key={index}>123</Text>
             <TouchableOpacity
               key={index}
               onPress={() => handleEditBudget(budget.budgetName)}

@@ -303,20 +303,88 @@ import { ExpenseContext } from "./ExpenseContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { UserContext } from "./UserContext";
 
 export default function Home() {
+  const { user } = useContext(UserContext);
   const navigation = useNavigation();
-  const [currencySymbol, setCurrencySymbol] = useState("");
+  const [currencySymbol, setCurrencySymbol] = useState("RM");
+  const [totalBudget, setTotalBudget] = useState(0);
+  const [remainingBudget, setRemainingBudget] = useState(0)
+  const [totalSpentState, setTotalSpentState] = useState(0)
+  // const [todaySpent, setTodaySpent] = useState(0)
 
-  const contextValue = useContext(ExpenseContext);
-  // console.log("ExpenseContext Value:", contextValue);
-  const {
-    expenses = [],
-    budgets = [],
-    hasNotifications = false,
-  } = contextValue || {}; //access the expenses from context
 
-  console.log("ExpenseContext Value:", contextValue);
+  const [sortedExpenses, setSortedExpenses] = useState([])
+  const [monthlyExpenses, setMonthlyExpenses] = useState([])
+  const [totalSpent, setTotalSpent] = useState(0)
+  const [todaySpent, setTodaySpent] = useState(0)
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const today = new Date().toISOString()?.split("T")[0];
+
+  const targetCategories = ["Food & Drinks", "Shopping", "Transport", "Housing", "Others"];
+
+  const { expenses, budgets, hasNotifications, fetchExpenses, fetchBudgets } = useContext(ExpenseContext);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchExpenses(user.user_id)
+      fetchBudgets(user.user_id)
+      // const totalBudgetAmount = budgets.filter(budget => {
+      //   const categories = budget.categories.split(", ").map(category => category.trim());
+      //   return targetCategories.every(targetCategory => categories.includes(targetCategory));
+      // }).reduce((total, budget) => total + parseFloat(budget.budgetAmount), 0);
+
+    }, []),
+  );
+
+  useEffect(() => {
+    // console.log(budgets);
+    if (budgets) {
+      const totalBudgetAmount = budgets.filter(budget => {
+        const categories = budget.categories.split(", ").map(category => category.trim());
+        const endDate = new Date(budget.end_date);
+        return targetCategories.every(targetCategory => categories.includes(targetCategory)) &&
+          endDate.getMonth() === currentMonth &&
+          endDate.getFullYear() === currentYear;
+      }).reduce((total, budget) => total + parseFloat(budget.budgetAmount), 0);
+      setTotalBudget(totalBudgetAmount)
+      setRemainingBudget(totalBudgetAmount-totalSpent)
+    }
+  }, [budgets])
+
+  useEffect(() => {
+    if (expenses) {
+
+      const sortedExpenses = [...expenses].sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+      setSortedExpenses(sortedExpenses)
+
+      const monthlyExpenses = sortedExpenses.filter((exp) => {
+        const expenseDate = new Date(exp.date);
+        return (
+          expenseDate.getMonth() === currentMonth &&
+          expenseDate.getFullYear() === currentYear
+        );
+      });
+      setMonthlyExpenses(monthlyExpenses)
+
+      const totalSpent = monthlyExpenses.reduce(
+        (total, item) => total + Number(item.amount),
+        0
+      );
+      setTotalSpent(totalSpent);
+
+      const todaySpent = sortedExpenses
+        .filter((exp) => exp.date === today)
+        .reduce((total, item) => total + Number(item.amount), 0);
+      setTodaySpent(todaySpent)
+    }
+  }, [expenses])
 
   useFocusEffect(
     React.useCallback(() => {
@@ -347,70 +415,47 @@ export default function Home() {
     }, [])
   );
 
-  const sortedExpenses = [...expenses].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
 
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  // console.log("50Budgets", budgets);
+  // const monthlyBudgets = Object.values(budgets).filter((budget) => {
+  //   const budgetCategories = budget.categories?.split(", ");
+  //   const allCategories = [
+  //     "Food & Drinks",
+  //     "Groceries",
+  //     "Shopping",
+  //     "Public Transport",
+  //     "Fuel",
+  //     "Car Maintenance",
+  //     "Parking",
+  //     "Rent",
+  //     "Bills",
+  //     "Medical Expenses",
+  //     "Fitness Memberships",
+  //     "Supplements",
+  //     "Personal Care",
+  //     "Subscriptions",
+  //     "Outdoor Activities",
+  //     "Books & Stationary",
+  //     "Loan Payments",
+  //     "Savings & Investments",
+  //     "Insurance",
+  //     "Miscellaneous",
+  //   ];
+  //   const includesAllCategories =
+  //     budgetCategories.length === allCategories.length &&
+  //     budgetCategories.every((category) => allCategories.includes(category));
+  //   return includesAllCategories && budget.budgetName === "Monthly";
+  // });
 
-  const monthlyExpenses = sortedExpenses.filter((exp) => {
-    const expenseDate = new Date(exp.date);
-    return (
-      expenseDate.getMonth() === currentMonth &&
-      expenseDate.getFullYear() === currentYear
-    );
-  });
-
-  const totalSpent = monthlyExpenses.reduce(
-    (total, item) => total + Number(item.amount),
-    0
-  );
-  const today = new Date().toISOString()?.split("T")[0];
-  const todaySpent = sortedExpenses
-    .filter((exp) => exp.date === today)
-    .reduce((total, item) => total + Number(item.amount), 0);
-  console.log("50Budgets", budgets);
-  const monthlyBudgets = Object.values(budgets).filter((budget) => {
-    const budgetCategories = budget.categories?.split(", ");
-    const allCategories = [
-      "Food & Drinks",
-      "Groceries",
-      "Shopping",
-      "Public Transport",
-      "Fuel",
-      "Car Maintenance",
-      "Parking",
-      "Rent",
-      "Bills",
-      "Medical Expenses",
-      "Fitness Memberships",
-      "Supplements",
-      "Personal Care",
-      "Subscriptions",
-      "Outdoor Activities",
-      "Books & Stationary",
-      "Loan Payments",
-      "Savings & Investments",
-      "Insurance",
-      "Miscellaneous",
-    ];
-    const includesAllCategories =
-      budgetCategories.length === allCategories.length &&
-      budgetCategories.every((category) => allCategories.includes(category));
-    return includesAllCategories && budget.budgetName === "Monthly";
-  });
-
-  const totalBudget = monthlyBudgets.reduce(
-    (total, budget) => total + Number(budget.budgetAmount),
-    0
-  );
+  // const totalBudget = monthlyBudgets.reduce(
+  //   (total, budget) => total + Number(budget.budgetAmount),
+  //   0
+  // );
   // const totalBudget = Object.values(budgets).reduce((total, amount) => {
   //   return total + (typeof amount === "number" ? amount : 0);
   // }, 0);
-  const remainingBudget = totalBudget - totalSpent;
-  console.log("Total budget:", totalBudget);
+  // const remainingBudget = totalBudget - totalSpent;
+  // console.log("Total budget:", totalBudget);
 
   return (
     <View style={styles.container}>

@@ -18,6 +18,7 @@ export default function FriendSplitHistory({ route, navigation }) {
   const { friendUsername, friendId } = route.params;
   const [splitExpenses, setSplitExpenses] = useState([]);
 
+
   useFocusEffect(
     React.useCallback(() => {
       getSplitExpense()
@@ -33,7 +34,8 @@ export default function FriendSplitHistory({ route, navigation }) {
           friend_id: friendId,
         }
       })
-      console.log(response.data);
+      console.log(response.data.splitExpense);
+
       if (response.data.splitExpense) {
         setSplitExpenses(response.data.splitExpense)
       }
@@ -51,7 +53,7 @@ export default function FriendSplitHistory({ route, navigation }) {
       <Text>{`Amount: ${item.amount}`}</Text>
       <Text>{`User owes: ${item.userShare}, Friend owes: ${item.friendShare}`}</Text>
       <Text>{`Payer: ${item.payer_name}`}</Text>
-      <Text>{`Status: ${item.status}`}</Text>
+      {/* <Text>{`Status: ${item.status}`}</Text> */}
     </View>
   );
 
@@ -65,10 +67,18 @@ export default function FriendSplitHistory({ route, navigation }) {
           <Text>{`Amount: RM${item.amount}`}</Text>
           <Text>{`${item.user_name} owes: RM${item.user_share}, ${item.friend_name} owes: RM${item.friend_share}`}</Text>
           <Text>{`${item.payer_name} paid RM${item.amount}`}</Text>
-          <Text>{`Status: ${item.status}`}</Text>
+          {/* <Text>{`Status: ${item.status}`}</Text> */}
         </View>
       ))}
-      <Button title="Add Split Expense" onPress={addSplitExpense} />
+      <Button title="Add Split Expense" onPress={addSplitExpense} style={styles.addButton} />
+      {splitExpenses.length > 0 && (
+        <View style={styles.buttonContainer}>
+          <Button title="Settle Up" onPress={() => navigation.navigate("SettleUpPayment", { friendId, splitExpenses })} />
+        </View>
+      )}
+      <View style={styles.buttonContainer}>
+          <Button title="Check Settle Up" onPress={() => navigation.navigate("CheckSettleUp", { friendId })} />
+        </View>
     </ScrollView>
   );
 }
@@ -92,4 +102,5 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 5,
   },
+  buttonContainer: { marginTop: 20, },
 });

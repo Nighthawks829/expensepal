@@ -123,6 +123,14 @@ export default function Account() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.preferenceItem}
+          onPress={() => navigation.navigate("uploadQRCode", { userData })
+          }
+        >
+          <Text style={styles.preferenceText}>Upload QR Code</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.preferenceItem}
           onPress={() =>
             navigation.navigate("CurrencyPreferences", { userData })
           }

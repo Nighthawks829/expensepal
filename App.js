@@ -65,6 +65,10 @@ import OnlinePayment from "./OnlinePayment";
 import AddGroupExpense from "./AddGroupExpense";
 import GroupSplitOptions from "./GroupSplitOptions";
 import AccountSettings from "./AccountSettings";
+import UploadQRcode from "./UploadQRcode";
+import SettleUpPayment from "./SettleUpPayment";
+import CheckSettleUp from "./CheckSettleUp";
+
 // import { CurrencyProvider } from "./CurrencyContext";
 // import AuthScreen from "./AuthScreen";
 // import ExpenseForm from "./ExpenseForm";
@@ -205,259 +209,290 @@ export default function App() {
   return (
     <ExpenseProvider>
       {/* <CurrencyProvider> */}
-        <UserProvider>
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="LoginSignup">
-              <Stack.Screen
-                name="LoginSignup"
-                component={LoginSignUp}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{
-                  title: "Login",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="SignUp"
-                component={SignUp}
-                options={{
-                  title: "Sign Up",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="HomeTabs"
-                component={TabNavigator}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="FriendRequest"
-                component={FriendRequest}
-                options={{
-                  title: "Friend Requests",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="FriendSplitHistory"
-                component={FriendSplitHistory}
-                options={{
-                  title: false,
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                  // headerShown: false
-                }}
-              />
-              <Stack.Screen
-                name="SplitExpense"
-                component={SplitExpense}
-                options={{
-                  title: "Split Expense",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              {/* <Stack.Screen name="AuthScreen" component={AuthScreen} /> */}
-              {/* <Stack.Screen name="ExpenseForm" component={ExpenseForm} /> */}
-              <Stack.Screen
-                name="SplitOptions"
-                component={SplitOptions}
-                options={{
-                  title: "Split Options",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen name="testCamera" component={testCamera} />
-              <Stack.Screen
-                name="Notification"
-                component={Notification}
-                options={{
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="ExpenseList"
-                component={ExpenseList}
-                options={{
-                  title: "Expenses List",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="ExpenseReport"
-                component={ExpenseReport}
-                options={{
-                  title: "Expense Report",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="EditExpense"
-                component={EditExpense}
-                options={{
-                  title: "Edit Expense",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="EditBudget"
-                component={EditBudget}
-                options={{
-                  title: "Edit Budget",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="Add_Budget"
-                component={Add_Budget}
-                options={{
-                  title: "Add Budget",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="UpdateBudget"
-                component={UpdateBudget}
-                options={{
-                  title: "Update Budget",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="CreateGroup"
-                component={CreateGroup}
-                options={{
-                  title: "Create Group",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="GroupDetails"
-                component={GroupDetails}
-                options={{
-                  title: false,
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="GroupMembers"
-                component={GroupMembers}
-                options={{
-                  title: "Group Members",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="CurrentBalance"
-                component={CurrentBalance}
-                options={{
-                  title: "Current Balance",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="AddGroupExpense"
-                component={AddGroupExpense}
-                options={{
-                  title: "Add Group Expense",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="GroupSplitOptions"
-                component={GroupSplitOptions}
-                options={{
-                  title: "Split Group Expense Options",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="GroupExpenseTransactionList"
-                component={GroupExpenseTransactionList}
-                options={{
-                  title: "Transaction List",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="InviteMember"
-                component={InviteMember}
-                options={{
-                  title: "Invite Member",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="SettleUp"
-                component={SettleUp}
-                options={{
-                  title: "Settle Up",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="OnlinePayment"
-                component={OnlinePayment}
-                options={{
-                  title: "Online Payment",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="Categories"
-                component={Categories}
-                options={{
-                  title: "Select Categories",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="SetCategoryBudget"
-                component={SetCategoryBudget}
-                options={{ title: "Set Category Budget" }}
-              />
-              <Stack.Screen
-                name="AccountSettings"
-                component={AccountSettings}
-                options={{
-                  title: "Account Settings",
-                  headerTitleAlign: "center",
-                  headerStyle: { backgroundColor: "#E1FFD4" },
-                }}
-              />
-              <Stack.Screen
-                name="SelectCurrency"
-                component={CurrencySelection}
-                options={{ title: "Select currency" }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </UserProvider>
+      <UserProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="LoginSignup">
+            <Stack.Screen
+              name="LoginSignup"
+              component={LoginSignUp}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                title: "Login",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{
+                title: "Sign Up",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="HomeTabs"
+              component={TabNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="FriendRequest"
+              component={FriendRequest}
+              options={{
+                title: "Friend Requests",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="FriendSplitHistory"
+              component={FriendSplitHistory}
+              options={{
+                title: false,
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+                // headerShown: false
+              }}
+            />
+            <Stack.Screen
+              name="SplitExpense"
+              component={SplitExpense}
+              options={{
+                title: "Split Expense",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            {/* <Stack.Screen name="AuthScreen" component={AuthScreen} /> */}
+            {/* <Stack.Screen name="ExpenseForm" component={ExpenseForm} /> */}
+            <Stack.Screen
+              name="SplitOptions"
+              component={SplitOptions}
+              options={{
+                title: "Split Options",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen name="testCamera" component={testCamera} />
+            <Stack.Screen
+              name="Notification"
+              component={Notification}
+              options={{
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="ExpenseList"
+              component={ExpenseList}
+              options={{
+                title: "Expenses List",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="ExpenseReport"
+              component={ExpenseReport}
+              options={{
+                title: "Expense Report",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="EditExpense"
+              component={EditExpense}
+              options={{
+                title: "Edit Expense",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="EditBudget"
+              component={EditBudget}
+              options={{
+                title: "Edit Budget",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="Add_Budget"
+              component={Add_Budget}
+              options={{
+                title: "Add Budget",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="UpdateBudget"
+              component={UpdateBudget}
+              options={{
+                title: "Update Budget",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="CreateGroup"
+              component={CreateGroup}
+              options={{
+                title: "Create Group",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="GroupDetails"
+              component={GroupDetails}
+              options={{
+                title: false,
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="GroupMembers"
+              component={GroupMembers}
+              options={{
+                title: "Group Members",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="CurrentBalance"
+              component={CurrentBalance}
+              options={{
+                title: "Current Balance",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="AddGroupExpense"
+              component={AddGroupExpense}
+              options={{
+                title: "Add Group Expense",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="GroupSplitOptions"
+              component={GroupSplitOptions}
+              options={{
+                title: "Split Group Expense Options",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="GroupExpenseTransactionList"
+              component={GroupExpenseTransactionList}
+              options={{
+                title: "Transaction List",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="InviteMember"
+              component={InviteMember}
+              options={{
+                title: "Invite Member",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="SettleUp"
+              component={SettleUp}
+              options={{
+                title: "Settle Up",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="OnlinePayment"
+              component={OnlinePayment}
+              options={{
+                title: "Online Payment",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="Categories"
+              component={Categories}
+              options={{
+                title: "Select Categories",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="SetCategoryBudget"
+              component={SetCategoryBudget}
+              options={{ title: "Set Category Budget" }}
+            />
+            <Stack.Screen
+              name="AccountSettings"
+              component={AccountSettings}
+              options={{
+                title: "Account Settings",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="uploadQRCode"
+              component={UploadQRcode}
+              options={{
+                title: "Upload QR Code",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+              }}
+            />
+            <Stack.Screen
+              name="SelectCurrency"
+              component={CurrencySelection}
+              options={{ title: "Select currency" }}
+            />
+
+            <Stack.Screen
+              name="SettleUpPayment"
+              component={SettleUpPayment}
+              options={{
+                title: "Settle Up Payment",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+                // headerShown: false
+              }}
+            />
+
+            <Stack.Screen
+              name="CheckSettleUp"
+              component={CheckSettleUp}
+              options={{
+                title: "Check Settle Up Payment",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+                // headerShown: false
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </UserProvider>
       {/* </CurrencyProvider> */}
     </ExpenseProvider>
   );

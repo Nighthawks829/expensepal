@@ -27,8 +27,8 @@ export const ExpenseProvider = ({ children }) => {
   }, [userId]);
 
   useEffect(() => {
-    console.log("Fetched Budgets:", budgets);
-    console.log("Expenses:", expenses);
+    // console.log("Fetched Budgets:", budgets);
+    // console.log("Expenses:", expenses);
   }, [budgets, expenses]);
 
   const fetchExpenses = async (userId) => {
@@ -48,7 +48,7 @@ export const ExpenseProvider = ({ children }) => {
       const fetchedExpenses = Array.isArray(response.data.expenses)
         ? response.data.expenses
         : [];
-      console.log("Fetch expense", fetchedExpenses);
+      // console.log("Fetch expense", fetchedExpenses);
       setExpenses(fetchedExpenses);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -88,7 +88,7 @@ export const ExpenseProvider = ({ children }) => {
 
   const fetchBudgets = async (userId) => {
     try {
-      console.log(userId);
+      // console.log(userId);
       const response = await axios.get(
         `http://192.168.0.112/expensepal_api/getBudget.php?user_id=${userId}`
       );
@@ -107,12 +107,15 @@ export const ExpenseProvider = ({ children }) => {
       //     setExpenses([]);
       // }
 
-      const fetchedBudgets =
-        response.data.success && Array.isArray(response.data.budgets)
-          ? response.data.budgets
-          : [];
-      console.log("114Fetched budget", fetchedBudgets);
-      setBudgets(fetchedBudgets);
+
+      // console.log(response.data.budgets);
+
+      // const fetchedBudgets =
+      //   response.data.success && Array.isArray(response.data.budgets)
+      //     ? response.data.budgets
+      //     : [];
+      // console.log("Fetched budget", fetchedBudgets);
+      setBudgets(response.data.budgets);
     } catch (error) {
       console.error("Error fetching budgets:", error);
       setBudgets([]);
@@ -120,7 +123,7 @@ export const ExpenseProvider = ({ children }) => {
   };
 
   const addBudget = (newBudget) => {
-    console.log("New Budget:", newBudget);
+    // console.log("New Budget:", newBudget);
     setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
     // console.log('Add Budgets:', budgets);
   };
