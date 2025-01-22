@@ -45,6 +45,7 @@ export default function SettleUpPayment({ route, navigation }) {
             const response = await axios.get("http://192.168.0.112/expensepal_api/getSettleUpPaymentUserId.php", {
                 params: {
                     user_id: user.user_id,
+                    friend_id:friendId,
                 }
             })
             console.log(response.data);
