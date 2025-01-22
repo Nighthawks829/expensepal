@@ -76,14 +76,16 @@ export default function Friend() {
   const fetchFriendRequests = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.0.112/expensepal_api/getFriendRequests.php",
+        // "http://192.168.0.112/expensepal_api/getFriendRequests.php",
+        "http://192.168.0.112/expensepal_api/getFriendRequestUserId.php",
         {
           params: { user_id: user?.user_id },
         }
       );
       console.log(response.data);
       if (response.data.success) {
-        setFriendRequests(response.data.requests || []);
+        // setFriendRequests(response.data.requests || []);
+        setFriendRequests(response.data.friend_requests)
       } else {
         Alert.alert(
           "Error",

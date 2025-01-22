@@ -18,7 +18,12 @@ export default function FriendRequest({ route }) {
   //const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [requestDetails, setRequestDetails] = useState(null);
-  const { friendRequests = [] } = route.params;
+  // const { friendRequests = [] } = route.params;
+  const [friendRequests, setFriendRequests] = useState([])
+
+  useEffect(() => {
+    getFriendRequests();
+  }, [])
 
   const handleResponse = async (action, friendship_id) => {
     console.log("Sending request with:", { action, friendship_id });
@@ -42,7 +47,8 @@ export default function FriendRequest({ route }) {
         );
 
         // if (action === "accept") {
-        navigation.navigate("Friend", { refresh: true });
+        // navigation.navigate("Friend", { refresh: true });
+        navigation.goBack();
         // }
       } else {
         Alert.alert(
@@ -55,6 +61,21 @@ export default function FriendRequest({ route }) {
       Alert.alert("Error", "An error occurred while processing the request.");
     }
   };
+
+  const getFriendRequests = async () => {
+    try {
+      const response = await axios.get("http://192.168.0.112/expensepal_api/getFriendRequestUserId.php", {
+        params: {
+          user_id: user.user_id,
+        }
+      })
+
+      console.log(response.data);
+      setFriendRequests(response.data.friend_requests)
+    } catch (error) {
+
+    }
+  }
 
   const sendAcceptNotificaton = async (sender_id) => {
     try {
@@ -114,7 +135,7 @@ export default function FriendRequest({ route }) {
           renderItem={({ item }) => (
             <View style={styles.requestItem}>
               <Text style={styles.requestMessage}>
-                {item.sender_username} sent you a friend request.
+                {item.friend_name} sent you a friend request.
               </Text>
               <View style={styles.actions}>
                 <TouchableOpacity
