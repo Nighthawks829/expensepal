@@ -82,7 +82,7 @@ export default function Friend() {
           params: { user_id: user?.user_id },
         }
       );
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
         // setFriendRequests(response.data.requests || []);
         setFriendRequests(response.data.friend_requests)
@@ -115,7 +115,7 @@ export default function Friend() {
           friendUsername: username, //receiver
         }
       );
-      console.log(response.data.success);
+      // console.log(response.data.success);
 
       if (response.data.success) {
         // setFriends([...friends, { username }]);
@@ -130,7 +130,7 @@ export default function Friend() {
           response.data.message || "Failed to send friend request."
         );
       }
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Add Friend Error:", error);
       Alert.alert("Error", "Unable to add friend. Please try again.");
@@ -279,7 +279,6 @@ export default function Friend() {
   );
 
   return (
-    console.log("280Friend request", friendRequests),
     (
       <View style={styles.container}>
         {friendRequests.length > 0 && (
@@ -292,7 +291,7 @@ export default function Friend() {
                 New Friend Requests ({friendRequests.length})
               </Text>
               <Text style={styles.friendRequestMessage}>
-                {friendRequests[0]?.message || "No recent messages"}
+              {friendRequests[0] ? `You have a friend request from ${friendRequests[0].friend_name}` : "No recent messages"}
               </Text>
             </View>
             <View style={styles.notificationBadge}>

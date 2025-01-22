@@ -68,6 +68,8 @@ import AccountSettings from "./AccountSettings";
 import UploadQRcode from "./UploadQRcode";
 import SettleUpPayment from "./SettleUpPayment";
 import CheckSettleUp from "./CheckSettleUp";
+import GroupSettleUpPayment from "./GroupSettleUpPayment";
+import GroupCheckSettleUpPayment from "./GroupCheckSettleUp";
 
 // import { CurrencyProvider } from "./CurrencyContext";
 // import AuthScreen from "./AuthScreen";
@@ -485,6 +487,28 @@ export default function App() {
               component={CheckSettleUp}
               options={{
                 title: "Check Settle Up Payment",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+                // headerShown: false
+              }}
+            />
+
+            <Stack.Screen
+              name="GroupSettleUpPayment"
+              component={GroupSettleUpPayment}
+              options={{
+                title: "Group Settle Up Payment",
+                headerTitleAlign: "center",
+                headerStyle: { backgroundColor: "#E1FFD4" },
+                // headerShown: false
+              }}
+            />
+
+            <Stack.Screen
+              name="GroupCheckSettleUpPayment"
+              component={GroupCheckSettleUpPayment}
+              options={{
+                title: "Group Check Settle Up Payment",
                 headerTitleAlign: "center",
                 headerStyle: { backgroundColor: "#E1FFD4" },
                 // headerShown: false
