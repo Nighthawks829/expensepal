@@ -123,12 +123,23 @@ export default function GroupMembers({ route, navigation }) {
   //   member.name.toLowerCase().includes(searchTerm.toLowerCase())
   // );
 
+  const filterMember = () => {
+    const filteredMembers = members.filter(member =>
+      member.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setMembers(filteredMembers)
+    // console.log(filteredMembers);
+  }
+
   return (
     <View style={styles.container}>
       <TextInput
         placeholder="Search Members"
         value={searchTerm}
-        onChangeText={searchTerm}
+        onChangeText={(value) => {
+          setSearchTerm(value)
+          filterMember()
+        }}
         style={styles.searchInput}
       />
       <FlatList
